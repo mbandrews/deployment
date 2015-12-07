@@ -1191,6 +1191,10 @@ EcalRenderPlugin::preDrawByName(TCanvas* canvas, VisDQMObject const& dqmObject, 
     if( obj->GetMaximum() > 0. ) obj->GetYaxis()->SetRangeUser( 0.,1.2*obj->GetMaximum() );
   }
 
+  if( TPRegexp("E[BE]ClusterTask/E[BE]CLT BC (energy|size) projection (eta|phi)(| EE [+-])").MatchB(fullpath) ){
+    if( obj->GetMaximum() > 0. ) obj->GetYaxis()->SetRangeUser( 0.,1.2*obj->GetMaximum() );
+  }
+
   if( TPRegexp("E[BE]TestPulseTask/Gain(12|6|1)/E[BE]TPT amplitude E[BE][+-][0-1][0-9] (G12|G6|G1)").MatchB(fullpath) ){
     if( fullpath.Contains("EBTPT") )
       obj->GetZaxis()->SetRangeUser( 100.,800. );
