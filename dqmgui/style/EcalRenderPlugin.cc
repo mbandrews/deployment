@@ -217,7 +217,7 @@ EcalRenderPlugin::~EcalRenderPlugin()
     delete ecalSubdetPartitions[i];
   for(int i(0); i < 36; ++i)
     delete ecalRCTSectors[i];
- 
+
   for(int i(0); i < 10; ++i){
     delete eeDCCArray[i];
     delete eeTCCArray[i];
@@ -956,6 +956,10 @@ EcalRenderPlugin::postDraw(TCanvas* canvas, const VisDQMObject& dqmObject, const
   bool isTH2Derived(obj->InheritsFrom(TH2::Class()));
   bool isMap(isNewStyle ? obj->TestBit(0x00080000) : isTH2Derived);
 
+  // Include overflow stat entry for pedestal rms TH1*
+  if( TPRegexp("E[BE]PedestalOnlineClient/E[BE]POT pedestal rms G12 E[BE][+-][0-1][0-9]").MatchB(fullpath) )
+    gStyle->SetOptStat(101111);
+
   if(isMap){
 
     canvas->SetBit(TCanvas::kClipFrame);
@@ -1022,7 +1026,7 @@ EcalRenderPlugin::postDraw(TCanvas* canvas, const VisDQMObject& dqmObject, const
 	  int iSM(TString(matches->At(1)->GetName()).Atoi());
 
 	  TH2C* labels(0);
-	  if(btype == kTriggerTower || btype == kPseudoStrip)
+    if(btype == kTriggerTower || btype == kPseudoStrip)
 	    labels = eeTTLabels;
 	  else
 	    labels = iSM < 0 ? eemSCLabels : eepSCLabels;
@@ -1031,7 +1035,7 @@ EcalRenderPlugin::postDraw(TCanvas* canvas, const VisDQMObject& dqmObject, const
 	  labels->GetYaxis()->SetRangeUser(obj->GetYaxis()->GetXmin(), obj->GetYaxis()->GetXmax() - 0.5);
 	  labels->Draw("text same");
 
-          if(btype == kTriggerTower || btype == kPseudoStrip) { 
+          if(btype == kTriggerTower || btype == kPseudoStrip) {
              eemTCCLabels->GetXaxis()->SetRangeUser(obj->GetXaxis()->GetXmin(), obj->GetXaxis()->GetXmax() - 1);
              eemTCCLabels->GetYaxis()->SetRangeUser(obj->GetYaxis()->GetXmin(), obj->GetYaxis()->GetXmax() - 1); 
              eepTCCLabels->GetXaxis()->SetRangeUser(obj->GetXaxis()->GetXmin(), obj->GetXaxis()->GetXmax() - 1);
@@ -1047,10 +1051,10 @@ EcalRenderPlugin::postDraw(TCanvas* canvas, const VisDQMObject& dqmObject, const
 	  if(iSM < 0 && !isNewStyle) iSM += 10;
 
 	  drawEESectors('D', iSM, obj);
-	  if(btype == kTriggerTower || btype == kPseudoStrip){
-	    drawEESectors('T', iSM, obj);
-	    drawEESectors('t', iSM, obj);
-	  }
+    if(btype == kTriggerTower || btype == kPseudoStrip){
+      drawEESectors('T', iSM, obj);
+      drawEESectors('t', iSM, obj);
+    }
 	}
 	delete matches;
       }
@@ -1154,7 +1158,7 @@ EcalRenderPlugin::preDrawByName(TCanvas* canvas, VisDQMObject const& dqmObject, 
   }
   else if(TPRegexp("E[BE]TimingTask/E[BE]TMT timing (map(| EE [+-])|E[BE][+-][0-1][0-9])").MatchB(fullpath)){
     if(isNewStyle)
-      obj->GetZaxis()->SetRangeUser(-5., 5.);
+      obj->GetZaxis()->SetRangeUser(-25., 25.);
     else
       obj->GetZaxis()->SetRangeUser(45., 55.);
     gStyle->SetPalette(timingPalette.size(), &(timingPalette[0]));
@@ -1193,9 +1197,9 @@ EcalRenderPlugin::preDrawByName(TCanvas* canvas, VisDQMObject const& dqmObject, 
 
   if( TPRegexp("E[BE]TestPulseTask/Gain(12|6|1)/E[BE]TPT amplitude E[BE][+-][0-1][0-9] (G12|G6|G1)").MatchB(fullpath) ){
     if( fullpath.Contains("EBTPT") )
-      obj->GetZaxis()->SetRangeUser( 100.,800. );
+      obj->GetZaxis()->SetRangeUser( 1000.,3900. );
     else if( fullpath.Contains("EETPT") )
-      obj->GetZaxis()->SetRangeUser( 150.,850. );
+      obj->GetZaxis()->SetRangeUser( 1500.,4400. );
   }
 
   if( TPRegexp("E[BE]TestPulseClient/E[BE]TPT test pulse rms (G12|G6|G1) E[BE][+-][0-1][0-9]").MatchB(fullpath) ){

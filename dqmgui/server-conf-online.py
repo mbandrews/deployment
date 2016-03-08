@@ -28,9 +28,12 @@ BASEDIR     = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HOSTALIAS   = HOST
 COLLHOST    = '127.0.0.1'
 COLLPORT    = 9190
-SERVICENAME = 'Online Development'
-SERVERPORT  = 8070
-BASEURL     = '/dqm/online-dev'
+#SERVICENAME = 'Online Development'
+SERVICENAME = 'ECAL DQM'
+#SERVERPORT  = 8070
+SERVERPORT  = 8030
+#BASEURL     = '/dqm/online-dev'
+BASEURL     = '/dqm/ecal'
 UPLOADDIR   = "%s/uploads" % STATEDIR
 FILEREPO    = { "ROOT": "%s/data" % STATEDIR }
 
